@@ -1,0 +1,18 @@
+.headerList {
+  list-style: none;
+  display: flex;
+}
+
+.headerItem:not(:last-child) {
+  margin-right: 50px;
+}
+
+.headerLink {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 45px;
+}
+
+.headerLink:active {
+  color: red;
+}

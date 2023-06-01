@@ -1,0 +1,19 @@
+.movieImage {
+  width: 200px;
+}
+
+.movieWrapper {
+  display: flex;
+  gap: 30px;
+  margin: 20px 30px 20px 70px;
+}
+
+.goBackBtn,
+.addInfoTitle {
+  margin-left: 40px;
+}
+
+.addInfoItem {
+  list-style: none;
+  margin-bottom: 15px;
+}

@@ -3,7 +3,6 @@ import {
   useParams,
   NavLink,
   Outlet,
-  useLocation,
   useSearchParams,
   useNavigate,
 } from 'react-router-dom';
@@ -14,7 +13,7 @@ const API_KEY = 'e6dcd31a9bcf35c6ea88f864789b7c2f';
 
 const MovieDetails = () => {
   const [movie, setMovie] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [, setSearchQuery] = useState('');
   const { movieId } = useParams();
 
   const [searchParams] = useSearchParams();

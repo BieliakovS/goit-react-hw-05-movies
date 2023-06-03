@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, NavLink, Outlet } from 'react-router-dom';
+import React, { useEffect, useState, Suspense } from 'react';
+import {
+  useParams,
+  NavLink,
+  Outlet,
+  useLocation,
+  useSearchParams,
+  useNavigate,
+} from 'react-router-dom';
 import css from './MovieDetails.module.css';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -7,7 +14,11 @@ const API_KEY = 'e6dcd31a9bcf35c6ea88f864789b7c2f';
 
 const MovieDetails = () => {
   const [movie, setMovie] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const { movieId } = useParams();
+
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -25,15 +36,24 @@ const MovieDetails = () => {
     fetchMovieDetails();
   }, [movieId]);
 
+  useEffect(() => {
+    const query = searchParams.get('query') || '';
+    setSearchQuery(query);
+  }, [searchParams]);
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   if (!movie) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <Link className={css.goBackBtn} to="/">
+      <button className={css.goBackBtn} onClick={handleGoBack}>
         Go back
-      </Link>
+      </button>
       <div className={css.movieWrapper}>
         <img
           className={css.movieImage}
@@ -64,8 +84,9 @@ const MovieDetails = () => {
           <NavLink to={`/movies/${movieId}/reviews`}>Reviews</NavLink>
         </li>
       </ul>
-
-      <Outlet />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 };

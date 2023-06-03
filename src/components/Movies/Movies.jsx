@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Link,
   useLocation,
@@ -25,7 +25,7 @@ const Movies = () => {
     setPreviousSearchResults(previousResults || []);
   }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     try {
       const response = await fetch(
         `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchQuery}`
@@ -39,7 +39,7 @@ const Movies = () => {
     } catch (error) {
       console.log('error search movies:', error);
     }
-  };
+  }, [searchQuery]);
 
   useEffect(() => {
     const query = searchParams.get('query');
@@ -47,7 +47,7 @@ const Movies = () => {
       setSearchQuery(query);
       handleSearch();
     }
-  }, []);
+  }, [searchParams, handleSearch]);
 
   const handleChange = event => {
     setSearchQuery(event.target.value);

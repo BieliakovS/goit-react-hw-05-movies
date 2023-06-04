@@ -1,10 +1,10 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import {
   useParams,
-  NavLink,
   Outlet,
   useSearchParams,
-  useNavigate,
+  useLocation,
+  Link,
 } from 'react-router-dom';
 import css from './MovieDetails.module.css';
 
@@ -15,9 +15,10 @@ const MovieDetails = () => {
   const [movie, setMovie] = useState(null);
   const [, setSearchQuery] = useState('');
   const { movieId } = useParams();
+  const location = useLocation();
+  const goBack = location.state?.from ?? '/';
 
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -40,19 +41,15 @@ const MovieDetails = () => {
     setSearchQuery(query);
   }, [searchParams]);
 
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
   if (!movie) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <button className={css.goBackBtn} onClick={handleGoBack}>
+      <Link className={css.goBackBtn} to={goBack} replace>
         Go back
-      </button>
+      </Link>
       <div className={css.movieWrapper}>
         <img
           className={css.movieImage}
@@ -77,10 +74,10 @@ const MovieDetails = () => {
       <p className={css.addInfoTitle}>Additional information:</p>
       <ul className={css.addInfoList}>
         <li className={css.addInfoItem}>
-          <NavLink to={`/movies/${movieId}/cast`}>Cast</NavLink>
+        <Link to={{ pathname: `/movies/${movieId}/cast`, state: { from: goBack } }}>Cast</Link>
         </li>
         <li className={css.addInfoItem}>
-          <NavLink to={`/movies/${movieId}/reviews`}>Reviews</NavLink>
+        <Link to={{ pathname: `/movies/${movieId}/reviews`, state: { from: goBack } }}>Reviews</Link>
         </li>
       </ul>
       <Suspense fallback={<div>Loading...</div>}>

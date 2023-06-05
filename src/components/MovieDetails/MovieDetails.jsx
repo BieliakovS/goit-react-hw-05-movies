@@ -1,11 +1,5 @@
 import React, { useEffect, useState, Suspense } from 'react';
-import {
-  useParams,
-  Outlet,
-  useSearchParams,
-  useLocation,
-  Link,
-} from 'react-router-dom';
+import { useParams, Outlet, useSearchParams, useLocation, Link } from 'react-router-dom';
 import css from './MovieDetails.module.css';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -23,9 +17,7 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
-        );
+        const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
         const data = await response.json();
         setMovie(data);
       } catch (error) {
@@ -47,7 +39,7 @@ const MovieDetails = () => {
 
   return (
     <div>
-      <Link className={css.goBackBtn} to={goBack} replace>
+      <Link className={css.goBackBtn} to={goBack}>
         Go back
       </Link>
       <div className={css.movieWrapper}>

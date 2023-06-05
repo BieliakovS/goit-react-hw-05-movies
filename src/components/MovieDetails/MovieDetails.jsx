@@ -17,7 +17,9 @@ const MovieDetails = () => {
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
+        const response = await fetch(
+          `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
+        );
         const data = await response.json();
         setMovie(data);
       } catch (error) {
@@ -39,7 +41,7 @@ const MovieDetails = () => {
 
   return (
     <div>
-      <Link className={css.goBackBtn} to={goBack}>
+      <Link className={css.goBackBtn} to={goBack} replace>
         Go back
       </Link>
       <div className={css.movieWrapper}>
@@ -66,10 +68,24 @@ const MovieDetails = () => {
       <p className={css.addInfoTitle}>Additional information:</p>
       <ul className={css.addInfoList}>
         <li className={css.addInfoItem}>
-        <Link to={{ pathname: `/movies/${movieId}/cast`, state: { from: goBack } }}>Cast</Link>
+          <Link
+            to={{
+              pathname: `/movies/${movieId}/cast`,
+              state: { from: goBack },
+            }}
+          >
+            Cast
+          </Link>
         </li>
         <li className={css.addInfoItem}>
-        <Link to={{ pathname: `/movies/${movieId}/reviews`, state: { from: goBack } }}>Reviews</Link>
+          <Link
+            to={{
+              pathname: `/movies/${movieId}/reviews`,
+              state: { from: goBack },
+            }}
+          >
+            Reviews
+          </Link>
         </li>
       </ul>
       <Suspense fallback={<div>Loading...</div>}>
@@ -80,5 +96,3 @@ const MovieDetails = () => {
 };
 
 export default MovieDetails;
-
-

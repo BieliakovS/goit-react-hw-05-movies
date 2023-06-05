@@ -61,7 +61,7 @@ const Movies = () => {
 
   const handleGoBack = () => {
     setSearchResults(previousSearchResults);
-    navigate(-1);
+    navigate(-1, { state: { searchResults: previousSearchResults } });
   };
 
   return (
@@ -81,7 +81,7 @@ const Movies = () => {
                 to={{
                   pathname: `/movies/${movie.id}`,
                   state: { searchResults },
-                }}
+                }} state={{ from: location }}
                 onClick={() => setSearchParams({ query: searchQuery })}
               >
                 {movie.title}

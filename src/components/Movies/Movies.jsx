@@ -1,90 +1,73 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  Link,
-  useLocation,
-  useSearchParams,
-  useNavigate,
-} from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = 'e6dcd31a9bcf35c6ea88f864789b7c2f';
 
 const Movies = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [previousSearchResults, setPreviousSearchResults] = useState([]);
+  const [films, setFilms] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get('query') ?? ''
+  );
   const location = useLocation();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const previousResults = JSON.parse(
-      localStorage.getItem('previousSearchResults')
-    );
-    setPreviousSearchResults(previousResults || []);
-  }, []);
-
-  const handleSearch = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchQuery}`
-      );
-      const data = await response.json();
-      setSearchResults(data.results);
-      localStorage.setItem(
-        'previousSearchResults',
-        JSON.stringify(data.results)
-      );
-    } catch (error) {
-      console.log('error search movies:', error);
-    }
-  }, [searchQuery]);
-
-  useEffect(() => {
-    const query = searchParams.get('query');
-    if (query) {
-      setSearchQuery(query);
-      handleSearch();
-    }
-  }, [searchParams, handleSearch]);
-
-  const handleChange = event => {
-    setSearchQuery(event.target.value);
-  };
+  const query = searchParams.get('query') ?? '';
 
   const handleSubmit = event => {
     event.preventDefault();
+    if (searchQuery === '') {
+      return alert(
+        'Sorry, but we dont can find empty string, you shoud write something'
+      );
+    }
     setSearchParams({ query: searchQuery });
-    handleSearch();
   };
 
-  const handleGoBack = () => {
-    setSearchResults(previousSearchResults);
-    navigate(-1, { state: { searchResults: previousSearchResults } });
+  const fetchSearchMovie = useCallback(async query => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log('Error searching movies:', error);
+      throw error;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!query) {
+      return;
+    }
+
+    fetchSearchMovie(query)
+      .then(info => {
+        if (!info.total_results) {
+          return alert(`Sorry we dont found ${query}`);
+        }
+        setFilms(info.results);
+      })
+      .catch(error => console.log(error));
+  }, [query, fetchSearchMovie]);
+
+  const handleChange = event => {
+    setSearchQuery(event.target.value);
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <input type="text" value={searchQuery} onChange={handleChange} />
-        <button type="submit">Пошук</button>
+        <button type="submit">Search</button>
       </form>
-      {location.pathname !== '/movies' && (
-        <button onClick={handleGoBack}>Назад</button>
-      )}
       <ul>
-        {searchResults.map(movie => (
-          <div key={movie.id}>
-            <li>
-              <Link
-                to={{
-                  pathname: `/movies/${movie.id}`,
-                  state: { searchResults },
-                }} state={{ from: location }}
-                onClick={() => setSearchParams({ query: searchQuery })}
-              >
-                {movie.title}
+        {films.map(({ original_title, id }) => (
+          <div>
+            <li key={id}>
+              <Link to={`/movies/${id}`} state={{ from: location }}>
+                {original_title}
               </Link>
             </li>
           </div>

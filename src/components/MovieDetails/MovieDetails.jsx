@@ -1,5 +1,11 @@
 import React, { useEffect, useState, Suspense } from 'react';
-import { useParams, Outlet, useSearchParams, useLocation, Link } from 'react-router-dom';
+import {
+  useParams,
+  Outlet,
+  useSearchParams,
+  useLocation,
+  Link,
+} from 'react-router-dom';
 import css from './MovieDetails.module.css';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -41,7 +47,7 @@ const MovieDetails = () => {
 
   return (
     <div>
-      <Link className={css.goBackBtn} to={goBack} replace>
+      <Link className={css.goBackBtn} to={goBack}>
         Go back
       </Link>
       <div className={css.movieWrapper}>
@@ -68,22 +74,12 @@ const MovieDetails = () => {
       <p className={css.addInfoTitle}>Additional information:</p>
       <ul className={css.addInfoList}>
         <li className={css.addInfoItem}>
-          <Link
-            to={{
-              pathname: `/movies/${movieId}/cast`,
-              state: { from: goBack },
-            }}
-          >
+          <Link to="cast" state={{ from: goBack }}>
             Cast
           </Link>
         </li>
         <li className={css.addInfoItem}>
-          <Link
-            to={{
-              pathname: `/movies/${movieId}/reviews`,
-              state: { from: goBack },
-            }}
-          >
+          <Link to="reviews" state={{ from: goBack }}>
             Reviews
           </Link>
         </li>
